@@ -1,5 +1,6 @@
 import pyodbc
 import datetime
+import sql_connect
 from dateutil.relativedelta import relativedelta
 
 # 获取当前时间
@@ -24,7 +25,7 @@ OP = 'OP'
 HP = 'HP' + YYYYMM
 
 # 创建连接
-connection_string = 'DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=MRPSDB;UID=IT_Adam;PWD=0eopaf.rk;'
+connection_string = sql_connect.mssql_MRPSDB
 
 # 使用with语句管理连接和游标
 with pyodbc.connect(connection_string) as conn:

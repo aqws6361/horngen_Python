@@ -1,2 +1,3 @@
-secret
-Python/test_secret.py
+test_secret.py
+*.txt
+sql_connect.py
