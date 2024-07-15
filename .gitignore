@@ -4,6 +4,8 @@ token.py
 sapAPI.py
 
 *.txt
+*.spec
+*.pdf
 
 build/
 dist/
