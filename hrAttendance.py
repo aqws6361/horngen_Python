@@ -50,9 +50,9 @@ else:
     print("没有符合条件的记录")
 
 # 建立数据库连接
-connection1 = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=PASDB;UID=IT_Adam;PWD=0eopaf.rk;')
-connection2 = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=EFGPTEST;UID=IT_Adam;PWD=0eopaf.rk;')
-connection3 = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=EFGPTEST;UID=IT_Adam;PWD=0eopaf.rk;')
+connection1 = pyodbc.connect(sql_connect.mssql_PASDB)
+connection2 = pyodbc.connect(sql_connect.mssql_EFGPTESTDB)
+connection3 = pyodbc.connect(sql_connect.mssql_EFGPTESTDB)
 
 try:
     # 创建游标

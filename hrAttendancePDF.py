@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 import datetime
 from dateutil.relativedelta import relativedelta
 import sys
+import sql_connect
 
 # 获取并打印当前工作目录
 print("Current Working Directory:", os.getcwd())
@@ -35,15 +36,19 @@ month = previous_month_time.strftime('%m')
 formatted_time_YM = current_time.strftime('%Y/%m')
 current_time_str = current_time.strftime('%Y-%m-%d %H:%M')
 previous_time_YM = previous_month_time.strftime('%Y/%m')
+YYYYMM = previous_month_time.strftime('%Y%m')
+
+OP = 'OP'
+HP = 'HP' + YYYYMM
 
 # 创建连接
-connection_string = 'DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=MRPSDB;UID=IT_Adam;PWD=0eopaf.rk;'
+connection_string = sql_connect.mssql_MRPSDB
 
 # 使用with语句管理连接和游标
 with pyodbc.connect(connection_string) as conn:
     with conn.cursor() as cursor:
         # 执行查询
-        query = f"SELECT TXT1, TXT2, TXT3, INT1, INT2, INT3 FROM SctlMast WHERE scrm_key = 'HP202405'"
+        query = f"SELECT TXT1, TXT2, TXT3, INT1, INT2, INT3 FROM SctlMast WHERE scrm_key = '{HP}'"
         cursor.execute(query)
 
         # 获取查询结果
@@ -57,29 +62,23 @@ if result:
     start63106320 = str(result[3])
     start6330 = str(result[4])
     start6340 = str(result[5])
-    print(f"查询结果: {horn63106320}、{horn6330}、{horn6340}、{start63106320}、{start6330}、{start6340}")
+    # print(f"查询结果: {horn63106320}、{horn6330}、{horn6340}、{start63106320}、{start6330}、{start6340}")
 else:
     print("没有符合条件的记录")
 
 # 建立数据库连接
-connection = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=PASDB;UID=IT_Adam;PWD=0eopaf.rk;')
+connection = pyodbc.connect(sql_connect.mssql_PASDB)
 
 # 执行 SELECT 查询语句获取特定值
 query = f"""
     SELECT HR.EmployeeCode, HR.EmployeeCnName, HR.AttendanceRankName, FORMAT(HR.BeginTime, 'yyyy-MM-dd HH:mm') AS BeginTime,
            FORMAT(HR.EndTime, 'yyyy-MM-dd HH:mm') AS EndTime, HR.Hours, HR.Version, HR.attendanceType
-    FROM HR_attendance HR 
-    WHERE YEAR(HR.attendanceDate) = ? 
-      AND MONTH(HR.attendanceDate) = ? 
-      AND HR.attendanceType = '1' 
-      AND HR.Version = (
-          SELECT MAX(subHR.Version) 
-          FROM HR_attendance subHR 
-          WHERE subHR.EmployeeCode = HR.EmployeeCode 
-            AND YEAR(subHR.attendanceDate) = YEAR(HR.attendanceDate) 
-            AND MONTH(subHR.attendanceDate) = MONTH(HR.attendanceDate) 
-            AND subHR.attendanceType = HR.attendanceType
-      )
+    FROM HR_attendance HR
+    WHERE (HR.EmployeeCode LIKE '1%' OR HR.EmployeeCode LIKE '2%')
+      AND YEAR(HR.attendanceDate) = ?
+      AND MONTH(HR.attendanceDate) = ?
+      AND HR.attendanceType = '1'
+      AND HR.Version = {start63106320}
     ORDER BY HR.EmployeeCode, HR.BeginTime;
 """
 
@@ -96,7 +95,7 @@ if df.empty:
     sys.exit()  # 退出程序
 
 # 创建PDF文件，指定文件保存路径
-pdf_file = f'hrAttendancePDF考勤.pdf'
+pdf_file = f'hrAttendancePDF宏恩宏聚.pdf'
 pdf = canvas.Canvas(pdf_file, pagesize=letter)
 width, height = letter
 
