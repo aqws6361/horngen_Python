@@ -1,13 +1,14 @@
 import requests
 import xml.etree.ElementTree as ET
+import sapAPI
+import token
 
 # 設定API端點URL
 url = "https://my303711-api.s4hana.ondemand.com:443/sap/opu/odata/sap/API_OPLACCTGDOCITEMCUBE_SRV/A_OperationalAcctgDocItemCube?$filter=AccountingDocument eq '2000000049' and  CompanyCode eq '6320'"
 
 # 設定驗證資訊
-username = "TESTAPI"
-password = "uXRkiEGCNyfUNTfVX{NFcnamByMKsjzSlEMfNq9v"
-
+username = sapAPI.username
+password = sapAPI.password
 
 # 設定HTTP請求標頭
 headers = {
@@ -28,7 +29,7 @@ if response.status_code == 200:
             #處理與LINE API連動
             text = element.text
             message = text
-            token = 'apfcppcyGnILgLNYTsuayWBY973wk6FczdphHrE0UJk'
+            token = token.sapAPI
             headers1 = {"Authorization": "Bearer " + token}
             data1 = {'message': message}
             requests.post("https://notify-api.line.me/api/notify",

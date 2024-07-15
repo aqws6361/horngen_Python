@@ -1,11 +1,8 @@
 import pyodbc
+import sql_connect
 
 # 建立数据库连接
-connection = pyodbc.connect('DRIVER={SQL Server};'
-                            'SERVER=192.168.53.53;'
-                            'DATABASE=MRPSDB;'
-                            'UID=USER_MRPS;'
-                            'PWD=CTRLMRPS;')
+connection = pyodbc.connect(sql_connect.mssql_MRPSDBself)
 
 # 创建游标
 cursor = connection.cursor()

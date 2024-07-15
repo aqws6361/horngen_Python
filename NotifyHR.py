@@ -1,8 +1,9 @@
 import pyodbc
 import datetime
+import sql_connect
 
 # 建立数据库连接
-connection = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=MRPSDB;UID=IT_Adam;PWD=0eopaf.rk;')
+connection = pyodbc.connect(sql_connect.mssql_MRPSDB)
 
 # 创建游标
 cursor = connection.cursor()
@@ -22,7 +23,7 @@ current_time = datetime.datetime.now()
 formatted_current_time = datetime.datetime.now().strftime("%Y%m%d")
 
 # 重新建立数据库连接
-connection = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=HRMDB;UID=IT_Adam;PWD=0eopaf.rk;')
+connection = pyodbc.connect(sql_connect.mssql_MRPSDB)
 
 # 重新创建游标
 cursor = connection.cursor()
@@ -67,11 +68,7 @@ else:
     message = '\n' + '宏恩宏聚刷卡' + '\n===============' + '\n今日刷卡數據未匯入HR' + '\n查詢日期: ' + formatted_current_time
 
 # 建立新的数据库连接和游标
-conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=192.168.53.53;'
-                      'Database=ODMGDB;'
-                      'UID=USER_MRPS;'
-                      'PWD=CTRLMRPS;')
+conn = pyodbc.connect(sql_connect.mssql_MRPSDBself)
 cursor = conn.cursor()
 
 # 执行 INSERT 语句

@@ -1,6 +1,7 @@
 import requests
 import pyodbc
 import datetime
+import sql_connect
 
 current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -8,7 +9,7 @@ current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 #token = 'dLF5rbxPQOTzjO2QaaleksNHRL5qzaywjFQZl6LbHVR'
 
 # 建立数据库连接
-connection = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=ODMGDB;UID=USER_MRPS;PWD=CTRLMRPS;')
+connection = pyodbc.connect(sql_connect.mssql_MRPSDBself)
 
 # 创建游标
 cursor = connection.cursor()

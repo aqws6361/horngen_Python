@@ -1,8 +1,9 @@
 import pyodbc
 import datetime
+import sql_connect
 
 # 建立数据库连接
-connection = pyodbc.connect('DRIVER={SQL Server};SERVER=192.168.53.53;DATABASE=MRPSDB;UID=USER_MRPS;PWD=CTRLMRPS;')
+connection = pyodbc.connect(sql_connect.mssql_MRPSDBself)
 
 # 创建游标
 cursor = connection.cursor()
@@ -75,11 +76,7 @@ if message == '':
     message = '\n===============' + '\n此時段無工單' + select_time
 print(message)
 # 建立新的数据库连接和游标
-conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=192.168.53.53;'
-                      'Database=ODMGDB;'
-                      'UID=USER_MRPS;'
-                      'PWD=CTRLMRPS;')
+conn = pyodbc.connect(sql_connect.mssql_MRPSDBself)
 cursor = conn.cursor()
 
 # 执行 INSERT 语句
