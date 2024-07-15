@@ -1,3 +1,10 @@
 test_secret.py
-*.txt
 sql_connect.py
+line_token.py
+
+*.txt
+
+build/
+dist/
+secret/
+tkinter/
