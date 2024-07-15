@@ -34,3 +34,4 @@ print(DecimalToAZ52(0))  # a
 print(DecimalToAZ52(26))  # A
 
 print(AZ52ToDecimal(AZ52Number))  # 4073126405
+print("測試github")
