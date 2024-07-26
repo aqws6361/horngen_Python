@@ -7,6 +7,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 import datetime
 from dateutil.relativedelta import relativedelta
+from decimal import Decimal
 import sys
 import sql_connect
 
@@ -26,9 +27,9 @@ def resource_path(relative_path):
 current_time = datetime.datetime.now()
 
 # 获取前一个月的时间
-previous_month_time = current_time - relativedelta(months=1)
+previous_month_time = current_time - relativedelta(months=2)
 
-# 提取前一個月的年、月
+# 提取前一个月的年、月
 year = previous_month_time.strftime('%Y')
 month = previous_month_time.strftime('%m')
 
@@ -62,40 +63,40 @@ if result:
     start63106320 = str(result[3])
     start6330 = str(result[4])
     start6340 = str(result[5])
-    # print(f"查询结果: {horn63106320}、{horn6330}、{horn6340}、{start63106320}、{start6330}、{start6340}")
 else:
     print("没有符合条件的记录")
 
 # 建立数据库连接
 connection = pyodbc.connect(sql_connect.mssql_PASDB)
 
-# 执行 SELECT 查询语句获取特定值
+# 执行查询
 query = f"""
     SELECT HR.EmployeeCode, HR.EmployeeCnName, HR.AttendanceRankName, FORMAT(HR.BeginTime, 'yyyy-MM-dd HH:mm') AS BeginTime,
            FORMAT(HR.EndTime, 'yyyy-MM-dd HH:mm') AS EndTime, HR.Hours, HR.Version, HR.attendanceType
     FROM HR_attendance HR
-    WHERE (HR.EmployeeCode LIKE '1%' OR HR.EmployeeCode LIKE '2%')
+    WHERE (HR.EmployeeCode LIKE '1A%' OR HR.EmployeeCode LIKE '2A%')
       AND YEAR(HR.attendanceDate) = ?
       AND MONTH(HR.attendanceDate) = ?
       AND HR.attendanceType = '1'
-      AND HR.Version = {start63106320}
+      AND HR.Version = {horn63106320}
     ORDER BY HR.EmployeeCode, HR.BeginTime;
 """
 
-# 使用pandas读取SQL查询结果
-df = pd.read_sql(query, connection, params=(year, month))
+with connection.cursor() as cursor:
+    cursor.execute(query, (year, month))
+    columns = [column[0] for column in cursor.description]
+    data = cursor.fetchall()
 
-# 关闭连接
-connection.close()
+# 将 pyodbc.Row 转换为 DataFrame
+df = pd.DataFrame.from_records(data, columns=columns)
 
-# 检查df是否为空
-if df.empty:
-    print("查無資料")
-    input("Press Enter to close...")  # 等待用户输入以保持窗口打开
-    sys.exit()  # 退出程序
+# 保存数据到 Excel 文件
+excel_file = f'hrAttendanceReport_{YYYYMM}.xlsx'
+df.to_excel(excel_file, index=False)
+print(f"Excel file saved as {excel_file}")
 
 # 创建PDF文件，指定文件保存路径
-pdf_file = f'hrAttendancePDF宏恩宏聚.pdf'
+pdf_file = f'hrAttendancePDF_{YYYYMM}.pdf'
 pdf = canvas.Canvas(pdf_file, pagesize=letter)
 width, height = letter
 
